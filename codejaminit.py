@@ -9,7 +9,7 @@ import shutil
 from lxml import etree
 
 
-BASE_CODE = """#!/usr/bin/env python
+BASE_CODE = r"""#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
