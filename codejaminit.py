@@ -3,8 +3,6 @@
 
 import os
 import argparse
-import pprint
-import shutil
 
 from lxml import etree
 
@@ -33,8 +31,10 @@ class Case(object):
 
     def run(self):
         result = self.get_result()
+        ###################### modify here #####################
         self.f_out.write('Case #%d: ' % self.i)
         self.f_out.write('%d\n' % result)
+        ########################################################
         return None
 
 
@@ -46,15 +46,28 @@ def parse_cmd_args():
     return input_path
 
 
-def split_line(line, typ=int):
-    return [typ(e) for e in line.strip().split()]
+def read_line(f_in, typ=None):
+    if isinstance(f_in, file):
+        line = f_in.readline()
+    elif isinstance(f_in, (str, unicode)):
+        line = f_in
+    else:
+        raise TypeError('unknown parameter type: %s' % type(f_in))
+
+    tokens = line.strip().split()
+    if typ:
+        r = [typ(e) for e in tokens]
+    else:
+        r = tokens
+    return r
 
 
 def read_a_case(f_in, m, func_list):
     r = []
     for i in range(m):
         line = f_in.readline().strip()
-        r.append(func_list[i](line))
+        func = func_list[i]
+        r.append(func(line))
     return r
 
 
@@ -92,7 +105,8 @@ def main():
     f_in = open(in_path)
     f_out = open(out_path, 'wb')
 
-    T = int(f_in.readline().strip())
+    T = read_line(f_in, int)
+    print T
 
     for i in range(T):
         ############### modify here #######################
