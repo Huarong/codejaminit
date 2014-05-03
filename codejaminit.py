@@ -105,18 +105,21 @@ def main():
     f_in = open(in_path)
     f_out = open(out_path, 'wb')
 
-    T = read_line(f_in, int)
+    T = read_line(f_in, int)[0]
     print T
 
+    count = 0
     for i in range(T):
         ############### modify here #######################
 
-        # n, a, b = read_a_case(f_in, 3, [int, split_line, split_line])
+        # n, a, b = read_a_case(f_in, 3, [int, read_line, read_line])
 
         # c = Case(f_out, i + 1, n, a, b)
         ##################################################
         c.run()
         del c
+        count += 1
+        print count
     f_in.close()
     f_out.close()
 
@@ -222,11 +225,18 @@ def parse_html(html_path):
     info['problems'] = []
     for i, name in enumerate(problem_list):
         problem = {}
-        lines = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[1]/code/text()' % i)
-        sample_in = [e.strip() for e in lines]
+        lines_in = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[1]/pre/text()' % i)
+        # 2014 xpath
+        if lines_in:
+            lines_out = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[2]/pre/text()' % i)
+        # old xpath
+        else:
+            lines_in = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[1]/code/text()' % i)
+            lines_out = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[2]/code/text()' % i)
+
+        sample_in = [e.strip() for e in lines_in]
         problem['sample_in'] = sample_in
-        lines = root.xpath('//*[@id="dsb-problem-content-div%d"]/div[@class="problem-io-wrapper"]/table/tbody/tr[2]/td[2]/code/text()' % i)
-        sample_an = [e.strip() for e in lines]
+        sample_an = [e.strip() for e in lines_out]
         problem['sample_an'] = sample_an
         problem['order'] = i
         problem['name'] = name
